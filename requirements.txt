@@ -1,5 +1,5 @@
-pandas==2.2.3
-numpy==2.1.2
-dbt==2.0.9
+pandas==2.3.3
+numpy==2.3.2
+dbt==2.0.0rc194
 openpyxl==3.1.5
 duckdb==2.0.0
