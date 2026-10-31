@@ -1,5 +1,5 @@
 # profiles.yml.example
-corporate_spend:
+expense_card_analytics:
   outputs:
     dev:
       type: duckdb
