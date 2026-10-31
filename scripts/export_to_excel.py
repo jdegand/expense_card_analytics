@@ -10,11 +10,12 @@ def export_marts_to_excel():
     con = duckdb.connect(database=DB_PATH, read_only=True)
     
     # Define the tables you want to export from your analytical layer
+    # Added the "main_marts." prefix so DuckDB can locate them
     tables_to_export = {
-        "Department Spend": "agg_department_monthly_spend",
-        "Expense Transactions": "fct_expense_transactions",
-        "Audit Exceptions": "fct_expense_audit_flags",
-        "Card Reconciliation": "fct_card_transactions"
+        "Department Spend": "main_marts.agg_department_monthly_spend",
+        "Expense Transactions": "main_marts.fct_expense_transactions",
+        "Audit Exceptions": "main_marts.fct_expense_audit_flags",
+        "Card Reconciliation": "main_marts.fct_card_transactions"
     }
     
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
@@ -26,6 +27,10 @@ def export_marts_to_excel():
             
             # Query the table directly out of duckdb
             df = con.execute(f"select * from {table_name}").df()
+
+            # --- FIX: Convert timezone-aware datetimes to timezone-unaware ---
+            for col in df.select_dtypes(include=['datetime64[ns, tz]', 'datetimetz']).columns:
+                df[col] = df[col].dt.tz_localize(None)
             
             # Write to excel
             df.to_excel(writer, sheet_name=sheet_name, index=False)
