@@ -1,0 +1,33 @@
+name: 'expense_card_analytics'
+version: '1.0.0'
+config-version: 2
+
+# Profile matches the connection defined in your local profiles.yml file
+profile: 'expense_card_analytics'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Configure materialization strategies hierarchically matching your file tree
+models:
+  expense_card_analytics:
+    dbt_core:
+      staging:
+        +materialized: view
+        +schema: staging
+        
+      intermediate:
+        +materialized: view
+        +schema: intermediate
+        
+      marts:
+        +materialized: table
+        +schema: marts

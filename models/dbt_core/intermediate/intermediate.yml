@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: int_expense_fx_conversion
+    description: "Intermediate model that matches the closest conversion factor and calculates base USD amounts."
+    columns:
+      - name: expense_transaction_key
+        description: "Primary key for the expense line entry."
+        tests:
+          - unique
+          - not_null
+      - name: is_fx_available
+        description: "Boolean flag showing if a valid FX rate was found for foreign currency entries."
+        tests:
+          - not_null
+
+  - name: int_card_expense_matches
+    description: "Reconciliation engine evaluating date tolerances, amount fields, and employee tracking IDs to pair AMEX charges to submitted expenses."
+    columns:
+      - name: card_transaction_key
+        description: "The primary key of the corporate credit card charge. Null for unmatched expense items."
+        tests:
+          - unique:
+              config:
+                where: "card_transaction_key is not null"
+      - name: expense_transaction_key
+        description: "The primary key of the submitted expense entry. Null for unmatched credit card charges."
+        tests:
+          - unique:
+              config:
+                where: "expense_transaction_key is not null"
+      - name: match_status
+        description: "The structural sorting status assigned by the match logic rules."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['matched', 'unmatched', 'ambiguous']

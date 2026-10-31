@@ -1,0 +1,29 @@
+# Local Virtual Environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Local Data Storage (Gitignored for Local Portfolio Execution)
+data/raw/
+
+# DuckDB Database Artifacts
+*.duckdb
+*.duckdb.wal
+
+# dbt Compilation and Package Artifacts
+logs/
+target/
+dbt_packages/
+dbt_internal_packages/
+profiles.yml
+.user.yml
+
+# Generated Analytical Reports
+reports/monthly_reporting_workbook.xlsx
+
+# System and IDE Files
+.DS_Store
+.vscode/
+.idea/

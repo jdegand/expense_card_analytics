@@ -1,0 +1,66 @@
+version: 2
+
+sources:
+  - name: raw_data
+    description: "Atomic landing layer containing raw transaction files and reference mapping tables."
+    schema: main
+    
+    tables:
+      - name: expense_transactions
+        description: "Raw ledger feed from the company expense manager platform."
+        config:
+          external_location: "data/raw/expenses/expense_transactions.csv"
+        columns:
+          - name: raw_transaction_id
+            tests:
+              - not_null
+          - name: employee_id
+            tests:
+              - not_null
+          - name: original_currency
+            tests:
+              - not_null
+
+      - name: card_transactions
+        description: "Raw corporate card charge ledger feed provided by AMEX."
+        config:
+          external_location: "data/raw/cards/card_transactions.csv"
+        columns:
+          - name: raw_transaction_id
+            tests:
+              - not_null
+          - name: original_amount
+            tests:
+              - not_null
+
+      - name: fx_rates
+        description: "Daily currency exchange multiplier table used for baseline USD conversion valuation."
+        config:
+          external_location: "data/raw/reference/fx_rates.csv"
+        columns:
+          - name: currency_code
+            tests:
+              - not_null
+          - name: effective_date
+            tests:
+              - not_null
+
+      - name: expense_reports
+        description: "Raw submitted employee expense report header reference file."
+        config:
+          external_location: "data/raw/expenses/expense_reports.csv"
+
+      - name: employees
+        description: "Corporate workforce master record reference registry."
+        config:
+          external_location: "data/raw/reference/employees.csv"
+
+      - name: cost_centers
+        description: "Company budget nodes and corporate cost center reference ledger."
+        config:
+          external_location: "data/raw/reference/cost_centers.csv"
+
+      - name: monthly_budgets
+        description: "Pre-allocated actual baseline organizational target budget matrix."
+        config:
+          external_location: "data/raw/reference/monthly_budgets.csv"

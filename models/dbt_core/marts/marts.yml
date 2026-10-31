@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: fct_expense_transactions
+    description: "Core factual ledger containing one row per submitted expense line."
+    columns:
+      - name: expense_transaction_key
+        description: "Deterministic unique business key: source_system + source_period + raw_transaction_id"
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_card_transactions
+    description: "Factual ledger tracking corporate credit card charges and reconciliation match states."
+    columns:
+      - name: card_transaction_key
+        description: "Deterministic unique business key for corporate card records."
+        tests:
+          - unique
+          - not_null
+      - name: match_status
+        description: "Reconciliation state derived from intermediate matching logic."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['matched', 'unmatched', 'ambiguous']
+
+  - name: fct_expense_audit_flags
+    description: "Narrow-grain compliance table tracking one row per triggered corporate policy infraction."
+    columns:
+      - name: expense_audit_flag_key
+        description: "Composite primary key: expense_transaction_key + rule_id"
+        tests:
+          - unique
+          - not_null
+      - name: rule_id
+        description: "The specific policy identifier breached."
+        tests:
+          - accepted_values:
+              arguments: 
+                values: [
+                  'EXP_MISSING_RECEIPT', 
+                  'EXP_LATE_SUBMISSION', 
+                  'EXP_EXCEEDS_THRESHOLD', 
+                  'EXP_POTENTIAL_DUPLICATE', 
+                  'EXP_INVALID_COST_CENTER'
+                ]
+
+  - name: agg_department_monthly_spend
+    description: "Monthly financial summaries mapping actual departmental spend against allocated budgets."
+    columns:
+      - name: actual_spend_usd
+        description: "Aggregated actual USD spend. Must not be null."
+        tests:
+          - not_null

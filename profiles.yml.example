@@ -1,0 +1,8 @@
+# profiles.yml.example
+corporate_spend:
+  outputs:
+    dev:
+      type: duckdb
+      path: 'spend_analytics.duckdb'
+      threads: 4
+  target: dev
